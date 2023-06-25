@@ -1,3 +1,19 @@
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+
+<p align="center">
+
+<a href="https://packagist.org/packages/sashagm/analytics"><img src="https://img.shields.io/packagist/dt/sashagm/analytics" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/sashagm/analytics"><img src="https://img.shields.io/packagist/v/sashagm/analytics" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/sashagm/analytics"><img src="https://img.shields.io/packagist/l/sashagm/analytics" alt="License"></a>
+<a href="https://packagist.org/packages/sashagm/analytics"><img src="https://img.shields.io/github/languages/code-size/sashagm/analytics" alt="Code size"></a>
+<a href="https://packagist.org/packages/sashagm/analytics"><img src="https://img.shields.io/packagist/stars/sashagm/analytics" alt="Code size"></a>
+
+[![PHP Version](https://img.shields.io/badge/PHP-%2B8-blue)](https://www.php.net/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-%2B10-red)](https://laravel.com/)
+
+</p>
+
+
 ## Laravel Analytics Unique Visitors and Views Middleware  
 
 Наш пакет предоставляет middleware для подсчета уникальных просмотров и посетителей на страницах вашего Laravel приложения. Он может быть полезен для веб-мастеров, которые хотят отслеживать действия ваших пользователей на своем сайте. Middleware будут полностью контролировать любые запросы к серверу.
