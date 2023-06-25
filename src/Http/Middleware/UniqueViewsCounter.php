@@ -39,7 +39,9 @@ class UniqueViewsCounter
                         'ip_address' => $ip,
                     ]);
 
-                    Log::info("Route {$routeName} visited by {$ip}");
+                    if (config('analytics.logger')) {
+                        Log::info("Route {$routeName} visited by {$ip}!");
+                    }
                 }
             }
 
@@ -49,6 +51,10 @@ class UniqueViewsCounter
                     'category' => 'route',
                     'data' => json_encode($views),
                 ]);
+
+                if (config('analytics.logger')) {
+                    Log::info("Created logs to models Statistic!");
+                }
             }
         }
 
@@ -57,5 +63,4 @@ class UniqueViewsCounter
 
         return $next($request);
     }
-
 }
