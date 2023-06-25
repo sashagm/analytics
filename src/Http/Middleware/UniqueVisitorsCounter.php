@@ -13,8 +13,17 @@ class UniqueVisitorsCounter
     {
         
 
-$ip = $_SERVER['REMOTE_ADDR'];
-
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $isBot = preg_match('/bot|crawl|slurp|spider/i', $ua);
+        
+        if (!$isBot) {
+            // обработка для обычных пользователей
+            $user = "user";
+        } else {
+            // обработка для поисковых роботов
+            $user = "bot";
+        }
         
         
         $visitorId = Cookie::get('visitor_id');
@@ -24,7 +33,7 @@ $ip = $_SERVER['REMOTE_ADDR'];
             Cookie::queue('visitor_id', $visitorId, 60 * 24 * 30);
 
             Visitor::create([
-                'category' => 'user',
+                'category' => $user,
                 'value' => $visitorId,
                 'ip_address' => $ip, 
             ]);
