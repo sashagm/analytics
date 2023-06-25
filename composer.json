@@ -1,6 +1,6 @@
 {
     "name": "sashagm/analytics",
-    "description": "description",
+    "description": "Laravel Analytics Unique Visitors and Views Middleware ",
     "minimum-stability": "stable",
     "license": "MIT",
     "authors": [

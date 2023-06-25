@@ -1,4 +1,4 @@
-## Laravel Analytics Unique Visitors and Views Middleware 
+## Laravel Analytics Unique Visitors and Views Middleware  
 
 Наш пакет предоставляет middleware для подсчета уникальных просмотров и посетителей на страницах вашего Laravel приложения. Он может быть полезен для веб-мастеров, которые хотят отслеживать действия ваших пользователей на своем сайте. Middleware будут полностью контролировать любые запросы к серверу.
 
@@ -60,3 +60,4 @@ composer test
 #### Лицензия
 
 Analytics - это программное обеспечение с открытым исходным кодом, лицензированное по [MIT license](LICENSE.md ).
+
