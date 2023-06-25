@@ -8,12 +8,12 @@ use Illuminate\Support\ServiceProvider;
 use Sashagm\Analytics\Console\Commands\InstallCommand;
 use Sashagm\Analytics\Http\Middleware\UniqueViewsCounter;
 use Sashagm\Analytics\Http\Middleware\UniqueVisitorsCounter;
-
+use Sashagm\Analytics\Traits\BootTrait;
 
 class AnalyticsServiceProvider extends ServiceProvider
 {
 
-
+    use BootTrait;
 
     /**
      * Register services.
@@ -44,8 +44,7 @@ class AnalyticsServiceProvider extends ServiceProvider
             ]);
         }
 
-        $this->app['router']->aliasMiddleware('unique.views', UniqueViewsCounter::class);
-        $this->app['router']->aliasMiddleware('unique.visitors', UniqueVisitorsCounter::class);
+        $this->starting();
 
 
         
