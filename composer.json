@@ -20,7 +20,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Sashagm\\Analytics\\": "src"
+            "Sashagm\\Analytics\\": "src",
+            "Sashagm\\Analytics\\Tests\\": "tests"
         }
     },
     "extra": {
@@ -29,5 +30,8 @@
                 "Sashagm\\Analytics\\Providers\\AnalyticsServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "php vendor/bin/phpunit tests"
     }
 }
