@@ -1,0 +1,33 @@
+{
+    "name": "sashagm/analytics",
+    "description": "description",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sashagm",
+            "email": "example@gmail.com",
+            "homepage": "https://github.com/sashagm"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^10.0",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sashagm\\Analytics\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sashagm\\Analytics\\Providers\\AnalyticsServiceProvider"
+            ]
+        }
+    }
+}
