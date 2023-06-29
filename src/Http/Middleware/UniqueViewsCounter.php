@@ -20,7 +20,7 @@ class UniqueViewsCounter
     public function handle($request, Closure $next)
     {
 
-        $this->start($request);
+        $this->run($request);
         return $next($request);
     }
 }

@@ -15,16 +15,12 @@ use Sashagm\Analytics\Models\Statistic;
 
 trait UniqueViewsCounterTrait
 {
-
-    public function start($request)
+    public function run($request)
     {
-
         $isEnabled = config('analytics.enabled', true);
         $cookieLifetime = config('analytics.cookie_lifetime', 60 * 24 * 30); // 30 дней
         $savePeriod = config('analytics.save_period', 60 * 24 * 7); // 7 дней
         $ip = $_SERVER['REMOTE_ADDR'];
-
-        // ...
 
         if ($isEnabled) {
             $routeName = $request->route()->getName();
@@ -51,25 +47,25 @@ trait UniqueViewsCounterTrait
 
             // сохраняем статистику раз в неделю
             if (time() % ($savePeriod * 60) == 0) {
-                Statistic::create([
-                    'category' => 'route',
-                    'data' => json_encode($views),
-                ]);
+                try {
+                    Statistic::create([
+                        'category' => 'route',
+                        'data' => json_encode($views),
+                    ]);
 
-                if (config('analytics.logger')) {
-                    Log::info("Created logs to models Statistic!");
+                    if (config('analytics.logger')) {
+                        Log::info("Created logs to models Statistic!");
+                    }
+                } catch (\Exception $e) {
+                    if (config('analytics.logger')) {
+                        Log::error("Failed to create logs to models Statistic: {$e->getMessage()}");
+                    }
                 }
             }
         }
 
-
-        // ...
-
         return $request;
-
-
-
     }
-
 }
+
 

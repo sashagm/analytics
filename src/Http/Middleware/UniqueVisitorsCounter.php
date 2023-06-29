@@ -18,7 +18,7 @@ class UniqueVisitorsCounter
     {
         
 
-        $this->starting($request);
+        $this->run($request);
 
         return $next($request);
     }

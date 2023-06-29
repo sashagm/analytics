@@ -26,4 +26,23 @@ class Statistic extends Model
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
     }
+
+    public static function getLast30Days($category)
+    {
+        $startDate = Carbon::now()->subDays(30);
+        $endDate = Carbon::now();
+
+        return self::where('category', $category)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+    }
+
+    public static function getAllTime($category)
+    {
+        return self::where('category', $category)
+            ->get();
+    }
+
+
+
 }
