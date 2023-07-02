@@ -16,8 +16,8 @@ trait UniqueVisitorsCounterTrait
     {
         $isEnabled = config('analytics.enabled', true);
         $cookieLifetime = config('analytics.cookie_lifetime', 60 * 24 * 30); // 30 дней
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $ip = $request->ip();
+        $ua = strtolower($request->userAgent());
         $isBot = preg_match('/bot|crawl|slurp|spider/i', $ua);
 
         if ($isEnabled) {
@@ -36,15 +36,7 @@ trait UniqueVisitorsCounterTrait
                     $visitorId = uniqid();
                     Cookie::queue('visitor_id', $visitorId, $cookieLifetime);
 
-                    Visitor::create([
-                        'category' => $user,
-                        'value' => $visitorId,
-                        'ip_address' => $ip,
-                    ]);
-
-                    if (config('analytics.logger')) {
-                        Log::info("New {$user} visited with ID {$visitorId}!");
-                    }
+                    $this->createVisitorLog($user, $visitorId, $ip);
                 }
             } catch (\Exception $e) {
                 if (config('analytics.logger')) {
@@ -54,5 +46,18 @@ trait UniqueVisitorsCounterTrait
         }
 
         return $request;
+    }
+
+    protected function createVisitorLog($user, $visitorId, $ip)
+    {
+        Visitor::create([
+            'category' => $user,
+            'value' => $visitorId,
+            'ip_address' => $ip,
+        ]);
+
+        if (config('analytics.logger')) {
+            Log::info("New {$user} visited with ID {$visitorId}!");
+        }
     }
 }

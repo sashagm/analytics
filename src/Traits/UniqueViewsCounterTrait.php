@@ -3,15 +3,14 @@
 namespace  Sashagm\Analytics\Traits;
 
 
-use Exception;
 use Closure;
+use Exception;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Jenssegers\Agent\Facades\Agent;
 use Illuminate\Support\Facades\Route;
 use Sashagm\Analytics\Models\Visitor;
 use Illuminate\Support\Facades\Cookie;
 use Sashagm\Analytics\Models\Statistic;
-
 
 trait UniqueViewsCounterTrait
 {
@@ -20,51 +19,61 @@ trait UniqueViewsCounterTrait
         $isEnabled = config('analytics.enabled', true);
         $cookieLifetime = config('analytics.cookie_lifetime', 60 * 24 * 30); // 30 дней
         $savePeriod = config('analytics.save_period', 60 * 24 * 7); // 7 дней
-        $ip = $_SERVER['REMOTE_ADDR'];
+        $ip = $request->ip();
 
         if ($isEnabled) {
             $routeName = $request->route()->getName();
 
-            if ($routeName && strpos($routeName, 'admin.') !== 0) {
+            if ($routeName && !str_starts_with($routeName, 'admin.')) {
                 $views = Cookie::get('views') ? json_decode(Cookie::get('views'), true) : [];
 
-                if (!is_null($views) && !in_array($routeName, $views)) {
+                if (!in_array($routeName, $views)) {
                     $views[] = $routeName;
                     Cookie::queue('views', json_encode($views), $cookieLifetime);
 
-                    Visitor::create([
-                        'category' => 'route',
-                        'value' => $routeName,
-                        'route' => Route::current()->uri(),
-                        'ip_address' => $ip,
-                    ]);
-
-                    if (config('analytics.logger')) {
-                        Log::info("Route {$routeName} visited by {$ip}!");
-                    }
+                    $this->createVisitorLog($routeName, $request->path(), $ip);
                 }
             }
 
             // сохраняем статистику раз в неделю
-            if (time() % ($savePeriod * 60) == 0) {
-                try {
-                    Statistic::create([
-                        'category' => 'route',
-                        'data' => json_encode($views),
-                    ]);
-
-                    if (config('analytics.logger')) {
-                        Log::info("Created logs to models Statistic!");
-                    }
-                } catch (\Exception $e) {
-                    if (config('analytics.logger')) {
-                        Log::error("Failed to create logs to models Statistic: {$e->getMessage()}");
-                    }
-                }
+            if (Carbon::now()->minute % ($savePeriod * 60) == 0) {
+                $this->createStatisticLog($views);
             }
         }
 
         return $request;
+    }
+
+    protected function createVisitorLog($routeName, $routePath, $ip)
+    {
+        Visitor::create([
+            'category' => 'route',
+            'value' => $routeName,
+            'route' => $routePath,
+            'ip_address' => $ip,
+        ]);
+
+        if (config('analytics.logger')) {
+            Log::info("Route {$routeName} visited by {$ip}!");
+        }
+    }
+
+    protected function createStatisticLog($views)
+    {
+        try {
+            Statistic::create([
+                'category' => 'route',
+                'data' => json_encode($views),
+            ]);
+
+            if (config('analytics.logger')) {
+                Log::info("Created logs to models Statistic!");
+            }
+        } catch (\Exception $e) {
+            if (config('analytics.logger')) {
+                Log::error("Failed to create logs to models Statistic: {$e->getMessage()}");
+            }
+        }
     }
 }
 
