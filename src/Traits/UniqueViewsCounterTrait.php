@@ -2,12 +2,10 @@
 
 namespace  Sashagm\Analytics\Traits;
 
-
 use Closure;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Sashagm\Analytics\Models\Visitor;
 use Illuminate\Support\Facades\Cookie;
 use Sashagm\Analytics\Models\Statistic;
@@ -31,7 +29,14 @@ trait UniqueViewsCounterTrait
                     $views[] = $routeName;
                     Cookie::queue('views', json_encode($views), $cookieLifetime);
 
-                    $this->createVisitorLog($routeName, $request->path(), $ip);
+                    // Check if the visitor with the same IP and route already exists
+                    $existingVisitor = Visitor::where('ip_address', $ip)
+                        ->where('route', $request->path())
+                        ->first();
+
+                    if (!$existingVisitor) {
+                        $this->createVisitorLog($routeName, $request->path(), $ip);
+                    }
                 }
             }
 
@@ -76,5 +81,3 @@ trait UniqueViewsCounterTrait
         }
     }
 }
-
-

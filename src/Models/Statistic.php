@@ -10,7 +10,6 @@ class Statistic extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'category',
         'data'

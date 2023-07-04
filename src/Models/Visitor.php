@@ -9,7 +9,12 @@ class Visitor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category', 'value', 'route', 'ip_adress'];
+    protected $fillable = [
+        'category',
+        'value',
+        'route',
+        'ip_adress',
+    ];
 
     public function scopeByCategory($query, $category)
     {

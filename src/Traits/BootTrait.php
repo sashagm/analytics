@@ -2,10 +2,7 @@
 
 namespace  Sashagm\Analytics\Traits;
 
-
 use Exception;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
 use Sashagm\Analytics\Http\Middleware\UniqueViewsCounter;
 use Sashagm\Analytics\Http\Middleware\UniqueVisitorsCounter;
 

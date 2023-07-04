@@ -3,11 +3,8 @@
 namespace Sashagm\Analytics\Providers;
 
 use Exception;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Sashagm\Analytics\Console\Commands\InstallCommand;
-use Sashagm\Analytics\Http\Middleware\UniqueViewsCounter;
-use Sashagm\Analytics\Http\Middleware\UniqueVisitorsCounter;
 use Sashagm\Analytics\Traits\BootTrait;
 
 class AnalyticsServiceProvider extends ServiceProvider

@@ -2,7 +2,6 @@
 
 namespace  Sashagm\Analytics\Traits;
 
-
 use Exception;
 use Closure;
 use Sashagm\Analytics\Models\Visitor;
@@ -36,7 +35,14 @@ trait UniqueVisitorsCounterTrait
                     $visitorId = uniqid();
                     Cookie::queue('visitor_id', $visitorId, $cookieLifetime);
 
-                    $this->createVisitorLog($user, $visitorId, $ip);
+                    // Проверяем, существует ли уже запись с таким же IP-адресом и значением пользователя
+                    $existingVisitor = Visitor::where('category', $user)
+                        ->where('ip_address', $ip)
+                        ->first();
+
+                    if (!$existingVisitor) {
+                        $this->createVisitorLog($user, $visitorId, $ip);
+                    }
                 }
             } catch (\Exception $e) {
                 if (config('analytics.logger')) {
