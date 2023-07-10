@@ -16,37 +16,53 @@ trait UniqueViewsCounterTrait
     {
         $isEnabled = config('analytics.enabled', true);
         $cookieLifetime = config('analytics.cookie_lifetime', 60 * 24 * 30); // 30 дней
-        $savePeriod = config('analytics.save_period', 60 * 24 * 7); // 7 дней
         $ip = $request->ip();
 
         if ($isEnabled) {
             $routeName = $request->route()->getName();
 
             if ($routeName && !str_starts_with($routeName, 'admin.')) {
-                $views = Cookie::get('views') ? json_decode(Cookie::get('views'), true) : [];
+                $views = $this->getViewsFromCookie();
 
                 if (!in_array($routeName, $views)) {
                     $views[] = $routeName;
-                    Cookie::queue('views', json_encode($views), $cookieLifetime);
+                    $this->storeViewsInCookie($views, $cookieLifetime);
 
-                    // Check if the visitor with the same IP and route already exists
-                    $existingVisitor = Visitor::where('ip_address', $ip)
-                        ->where('route', $request->path())
-                        ->first();
-
-                    if (!$existingVisitor) {
+                    if (!$this->isVisitorExists($ip, $request->path())) {
                         $this->createVisitorLog($routeName, $request->path(), $ip);
                     }
                 }
             }
 
-            // сохраняем статистику раз в неделю
-            if (Carbon::now()->minute % ($savePeriod * 60) == 0) {
+            if ($this->isSavePeriod()) {
                 $this->createStatisticLog($views);
             }
         }
 
         return $request;
+    }
+
+    protected function getViewsFromCookie()
+    {
+        return Cookie::get('views') ? json_decode(Cookie::get('views'), true) : [];
+    }
+
+    protected function storeViewsInCookie($views, $lifetime)
+    {
+        Cookie::queue('views', json_encode($views), $lifetime);
+    }
+
+    protected function isVisitorExists($ip, $routePath)
+    {
+        return Visitor::where('ip_address', $ip)
+            ->where('route', $routePath)
+            ->exists();
+    }
+
+    protected function isSavePeriod()
+    {
+        $savePeriod = config('analytics.save_period', 60 * 24 * 7); // 7 дней
+        return Carbon::now()->minute % ($savePeriod * 60) == 0;
     }
 
     protected function createVisitorLog($routeName, $routePath, $ip)

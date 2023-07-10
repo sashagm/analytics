@@ -36,11 +36,7 @@ trait UniqueVisitorsCounterTrait
                     Cookie::queue('visitor_id', $visitorId, $cookieLifetime);
 
                     // Проверяем, существует ли уже запись с таким же IP-адресом и значением пользователя
-                    $existingVisitor = Visitor::where('category', $user)
-                        ->where('ip_address', $ip)
-                        ->first();
-
-                    if (!$existingVisitor) {
+                    if (!$this->isVisitorExists($user, $ip)) {
                         $this->createVisitorLog($user, $visitorId, $ip);
                     }
                 }
@@ -52,6 +48,13 @@ trait UniqueVisitorsCounterTrait
         }
 
         return $request;
+    }
+
+    protected function isVisitorExists($user, $ip)
+    {
+        return Visitor::where('category', $user)
+            ->where('ip_address', $ip)
+            ->exists();
     }
 
     protected function createVisitorLog($user, $visitorId, $ip)
