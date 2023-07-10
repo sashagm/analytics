@@ -25,34 +25,45 @@ class AnalyticsServiceProvider extends ServiceProvider
      */
 
 
-     public function boot()
-     {
+    public function boot()
+    {
+
+        $this->registerRouter();
+
+        $this->registerMigrate();
+
+        $this->publishFiles();
+
+        $this->registerCommands();
+
+        $this->starting();
+    }
 
 
-        $this->loadRoutesFrom(__DIR__.'/../routes/analytics.php');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/analytics.php', 'analytics'
-        );
-        
+    protected function registerCommands()
+    {
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallCommand::class,
             ]);
         }
-
-        $this->starting();
-
-
-        
-
-
-
     }
 
+    protected function registerRouter()
+    {
+        $this->loadRoutesFrom(__DIR__ . '/../routes/analytics.php');
+    }
 
+    protected function registerMigrate()
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+    }
 
-
-     
+    protected function publishFiles()
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/analytics.php',
+            'analytics'
+        );
+    }
 }
-
