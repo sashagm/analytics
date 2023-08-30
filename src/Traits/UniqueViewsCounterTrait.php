@@ -12,6 +12,9 @@ use Sashagm\Analytics\Models\Statistic;
 
 trait UniqueViewsCounterTrait
 {
+
+    use BuildsLoggers;
+
     public function run($request)
     {
         $isEnabled = config('analytics.enabled', true);
@@ -21,7 +24,7 @@ trait UniqueViewsCounterTrait
         if ($isEnabled) {
             $routeName = $request->route()->getName();
 
-            if ($routeName && !str_starts_with($routeName, 'admin.')) {
+            if ($routeName && !str_starts_with($routeName, config('analytics.admin'))) {
                 $views = $this->getViewsFromCookie();
 
                 if (!in_array($routeName, $views)) {
@@ -75,7 +78,9 @@ trait UniqueViewsCounterTrait
         ]);
 
         if (config('analytics.logger')) {
-            Log::info("Route {$routeName} visited by {$ip}!");
+
+            $this->logger('info', "Route {$routeName} visited by {$ip}!");
+
         }
     }
 
@@ -88,11 +93,13 @@ trait UniqueViewsCounterTrait
             ]);
 
             if (config('analytics.logger')) {
-                Log::info("Created logs to models Statistic!");
+
+                $this->logger('info', "Created logs to models Statistic!");
             }
         } catch (\Exception $e) {
             if (config('analytics.logger')) {
-                Log::error("Failed to create logs to models Statistic: {$e->getMessage()}");
+
+                $this->logger('error', "Failed to create logs to models Statistic: {$e->getMessage()}");
             }
         }
     }

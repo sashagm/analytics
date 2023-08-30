@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Cookie;
 
 trait UniqueVisitorsCounterTrait
 {
+
+    use BuildsLoggers;
+
     public function run($request)
     {
         $isEnabled = config('analytics.enabled', true);
@@ -22,10 +25,10 @@ trait UniqueVisitorsCounterTrait
         if ($isEnabled) {
             if (!$isBot) {
                 // обработка для обычных пользователей
-                $user = "user";
+                $user = config('analytics.provider.users');
             } else {
                 // обработка для поисковых роботов
-                $user = "bot";
+                $user = config('analytics.provider.bots');
             }
 
             try {
@@ -42,7 +45,9 @@ trait UniqueVisitorsCounterTrait
                 }
             } catch (\Exception $e) {
                 if (config('analytics.logger')) {
-                    Log::error("Failed to create logs to models Visitor: {$e->getMessage()}");
+
+                    $this->logger('error', "Failed to create logs to models Visitor: {$e->getMessage()}");
+
                 }
             }
         }
@@ -66,7 +71,9 @@ trait UniqueVisitorsCounterTrait
         ]);
 
         if (config('analytics.logger')) {
-            Log::info("New {$user} visited with ID {$visitorId}!");
+
+            $this->logger('info', "New {$user} visited with ID {$visitorId}!");
+
         }
     }
 }
