@@ -28,11 +28,11 @@ class AnalyticsServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        $this->publishFiles();
+
         $this->registerRouter();
 
         $this->registerMigrate();
-
-        $this->publishFiles();
 
         $this->registerCommands();
 
